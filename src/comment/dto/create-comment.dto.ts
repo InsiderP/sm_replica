@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsOptional, IsString } from 'class-validator';
 
 export class CreateCommentDto {
-  @ApiProperty({ example: 'Nice post yet!' })
+  @ApiProperty({ example: 'Nice post yet!!' })
   @IsString()
   text: string;
 
