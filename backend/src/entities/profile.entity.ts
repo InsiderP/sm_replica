@@ -59,6 +59,19 @@ export class Profile {
 
   
 
+  @Column({ type: 'double precision', nullable: true })
+  latitude?: number;
+
+  @Column({ type: 'double precision', nullable: true })
+  longitude?: number;
+
+  @Column({ type: 'boolean', default: false })
+  is_available: boolean;
+
+  @Column({ type: 'timestamptz', nullable: true })
+  last_seen_at?: Date;
+
+
   @Column({ default: true })
   is_active: boolean;
 

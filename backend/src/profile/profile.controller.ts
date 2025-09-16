@@ -1,5 +1,5 @@
-import { Controller, Get, Param, Post, Body, Put, Patch, UseGuards, UseInterceptors, UploadedFile } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBody, ApiParam, ApiConsumes } from '@nestjs/swagger';
+import { Controller, Get, Param, Post, Body, Put, Patch, UseGuards, UseInterceptors, UploadedFile, Query } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiBody, ApiParam, ApiConsumes, ApiQuery } from '@nestjs/swagger';
 import { ProfileService } from './profile.service';
 import { Profile } from 'src/entities/profile.entity';
 import { UpdateProfileDto } from './dto/update-profile.dto';
@@ -11,6 +11,7 @@ import { SUPABASE_CLIENT } from '../common/providers/supabase.provider';
 import { Inject } from '@nestjs/common';
 import { SupabaseClient } from '@supabase/supabase-js';
 import type { Express } from 'express';
+import { UpdateLocationDto } from './dto/update-location.dto';
 
 
 @ApiTags('users')
@@ -87,5 +88,36 @@ export class ProfileController {
     return this.profileService.deactivateProfile(id);
   }
 
- 
+  @Patch('me/location')
+  @UseGuards(AuthGuard)
+  @ApiOperation({ summary: 'Update current user location and availability' })
+  async updateMyLocation(
+    @CurrentUser() user: any,
+    @Body() dto: UpdateLocationDto,
+  ) {
+    await this.profileService.updateLocation(
+      user.id,
+      dto.latitude,
+      dto.longitude,
+      dto.is_available,
+    );
+    return { success: true };
+  }
+
+  @Get('nearby')
+  @UseGuards(AuthGuard)
+  @ApiOperation({ summary: 'Get nearby available public users within given radius (km)' })
+  @ApiQuery({ name: 'radiusKm', required: false, example: 5, description: 'Search radius in kilometers' })
+  async getNearby(
+    @CurrentUser() user: any,
+    @Query('radiusKm') radiusKm?: string,
+  ) {
+    const radius = Number(radiusKm ?? 5);
+    const me = await this.profileService.findById(user.id);
+    if (!me || me.latitude == null || me.longitude == null) {
+      return [];
+    }
+    return this.profileService.findNearby(me.latitude, me.longitude, radius, user.id);
+  }
+
 } 
