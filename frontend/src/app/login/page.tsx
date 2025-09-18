@@ -63,8 +63,9 @@ export default function LoginPage() {
           </button>
           {error && <p className="text-red-600 text-sm text-center">{error}</p>}
         </form>
-        <p className="mt-3 opacity-80 text-center text-sm">
-          Or <Link className="underline" href="/">go home</Link>
+        <p className="mt-3 opacity-80 text-center text-sm flex items-center justify-center gap-4">
+          <Link className="underline" href="/">go to home</Link>
+          <Link className="underline text-black font-semibold" href="/signup">Signup</Link>
         </p>
       </div>
     </div>
