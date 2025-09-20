@@ -104,7 +104,7 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="min-h-[calc(100vh-57px)] flex items-center justify-center bg-gradient-to-br from-[#ffedd5] via-[#fae8ff] to-[#e0f2fe]">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#ffedd5] via-[#fae8ff] to-[#e0f2fe]">
       <div className="w-full max-w-2xl mx-auto p-0 rounded-2xl border border-black/10 dark:border-white/10 bg-white/80 dark:bg-black/40 backdrop-blur shadow-xl overflow-hidden">
         <div className="px-6 pt-6 pb-3 border-b border-black/10 dark:border-white/10 bg-white/60 dark:bg-black/30">
           <div className="flex items-center justify-between">

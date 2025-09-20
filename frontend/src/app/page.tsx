@@ -1,4 +1,17 @@
+'use client';
+import { useEffect } from 'react';
+import { isAuthenticated } from '@/lib/auth';
+import { useRouter } from 'next/navigation';
+
 export default function Home() {
+  const router = useRouter();
+
+  useEffect(() => {
+    if (isAuthenticated()) {
+      router.push('/dashboard');
+    }
+  }, [router]);
+
   return (
     <section
       className="min-h-screen w-full relative flex items-center justify-center"
@@ -15,12 +28,20 @@ export default function Home() {
         <p className="text-lg opacity-95 mb-6 drop-shadow">
           Meet people nearby for coffee, parties, and spontaneous meetups.
         </p>
-        <a
-          className="inline-block bg-white text-black hover:bg-neutral-200 rounded px-6 py-3 font-semibold"
-          href="/login"
-        >
-          Login
-        </a>
+        <div className="flex gap-4 justify-center">
+          <a
+            className="inline-block bg-white text-black hover:bg-neutral-200 rounded px-6 py-3 font-semibold"
+            href="/login"
+          >
+            Login
+          </a>
+          <a
+            className="inline-block bg-transparent border-2 border-white text-white hover:bg-white hover:text-black rounded px-6 py-3 font-semibold transition"
+            href="/signup"
+          >
+            Signup
+          </a>
+        </div>
       </div>
     </section>
   );

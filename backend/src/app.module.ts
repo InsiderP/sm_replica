@@ -7,11 +7,14 @@ import { SupabaseProviderModule } from './common/providers/supabase.module';
 import { WinstonLoggerModule } from './common/logger/winston-logger.module';
 import { MomentModule } from './moment/moment.module';
 import { FollowModule } from './follow/follow.module';
+import { UserModule } from './profile/profile.module';
 
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
 import { GlobalExceptionFilter } from './common/filters/global-exception.filter';
 import { PostModule } from './post/post.module';
 import { CommentModule } from './comment/comment.module';
+import { HangoutModule } from './hangout/hangout.module';
+import { RootController } from './root.controller';
 
 @Module({
   imports: [
@@ -20,15 +23,18 @@ import { CommentModule } from './comment/comment.module';
     TypeOrmProviderModule.forRootAsync(),
     WinstonLoggerModule,
     AuthModule,
+    UserModule,
     PostModule,
     CommentModule,
     MomentModule,
-    FollowModule
+    FollowModule,
+    HangoutModule
   ],
   providers: [
  
     TransformInterceptor,
     GlobalExceptionFilter,
   ],
+  controllers: [RootController]
 })
 export class AppModule {}

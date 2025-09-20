@@ -58,46 +58,54 @@ export class ProfileService {
     originLon: number,
     radiusKm: number,
     excludeProfileId?: string,
-  ): Promise<Array<{ id: string; userName: string; avatarUrl?: string; distanceKm: number }>> {
+  ): Promise<Array<{ id: string; userName: string; avatarUrl?: string; gender?: string; distance_km: number; latitude: number; longitude: number }>> {
     const earthRadiusKm = 6371;
 
     // Using raw SQL for Haversine; clamp inner value to [-1,1] for numerical stability
+    const distanceExpr = `${earthRadiusKm} * acos(least(1, greatest(-1, cos(radians(:olat)) * cos(radians(p.latitude)) * cos(radians(p.longitude) - radians(:olon)) + sin(radians(:olat)) * sin(radians(p.latitude)))))`;
+
     const qb = this.profileRepository
       .createQueryBuilder('p')
       .select('p.id', 'id')
       .addSelect('p.userName', 'userName')
       .addSelect('p.avatarUrl', 'avatarUrl')
-      .addSelect(
-        `${earthRadiusKm} * acos(least(1, greatest(-1, cos(radians(:olat)) * cos(radians(p.latitude)) * cos(radians(p.longitude) - radians(:olon)) + sin(radians(:olat)) * sin(radians(p.latitude)))))`,
-        'distanceKm',
-      )
+      .addSelect('p.gender', 'gender')
+      .addSelect('p.latitude', 'latitude')
+      .addSelect('p.longitude', 'longitude')
+      .addSelect(distanceExpr, 'distance_km')
       .where('p.latitude IS NOT NULL')
       .andWhere('p.longitude IS NOT NULL')
       .andWhere('p.is_available = true')
       .andWhere('p.is_public = true')
       .setParameters({ olat: originLat, olon: originLon })
-      .orderBy('distanceKm', 'ASC');
+      .orderBy('distance_km', 'ASC');
 
     if (excludeProfileId) {
       qb.andWhere('p.id != :pid', { pid: excludeProfileId });
     }
 
-    // Filter by radius using HAVING since distance is a computed select
-    qb.having('distanceKm <= :radiusKm', { radiusKm });
+    // Filter by radius using WHERE on the distance expression to avoid GROUP BY requirements
+    qb.andWhere(`${distanceExpr} <= :radiusKm`, { radiusKm, olat: originLat, olon: originLon });
 
     const rows = await qb.getRawMany<{
       id: string;
-      userName: string;
-      avatarUrl?: string;
-      distancekm: number;
+      username: string;
+      avatarurl?: string;
+      gender?: string;
+      latitude: number;
+      longitude: number;
+      distance_km: number;
+      distancekm?: number; // some drivers lowercase underscores
     }>();
 
-    // getRawMany lowercases alias, map accordingly
-    return rows.map(r => ({
-      id: (r as any).id,
-      userName: (r as any).username,
-      avatarUrl: (r as any).avatarurl,
-      distanceKm: Number((r as any).distancekm),
+    return rows.map((r: any) => ({
+      id: r.id,
+      userName: r.username,
+      avatarUrl: r.avatarurl,
+      gender: r.gender,
+      latitude: Number(r.latitude),
+      longitude: Number(r.longitude),
+      distance_km: Number(r.distance_km ?? r.distancekm),
     }));
   }
 } 

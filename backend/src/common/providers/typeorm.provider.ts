@@ -10,6 +10,7 @@ import { Moment } from 'src/entities/moment.entity';
 import { PostMedia } from 'src/entities/post-media.entity';
 import { Post } from 'src/entities/post.entity';
 import { Profile } from 'src/entities/profile.entity';
+import { HangoutRequest } from 'src/entities/hangout-request.entity';
 
 
 export const typeOrmProvider = {
@@ -20,7 +21,7 @@ export const typeOrmProvider = {
     username: config.get<string>('DB_USERNAME', ''),
     password: config.get<string>('DB_PASSWORD', ''),
     database: config.get<string>('DB_NAME', ''),
-    entities: [Profile, Post, Like, Follow,PostMedia,Comment,CommentLike,Moment,MomentLike,MomentReply],
+    entities: [Profile, Post, Like, Follow,PostMedia,Comment,CommentLike,Moment,MomentLike,MomentReply,HangoutRequest],
     synchronize: true, // Set to false in production!
     schema: 'public',
   }),

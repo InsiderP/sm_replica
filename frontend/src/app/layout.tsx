@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import ConditionalNavigation from "@/components/ConditionalNavigation";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,11 +28,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {/* <nav className="flex gap-4 p-4 border-b border-black/10 dark:border-white/20">
-          <a className="hover:underline" href="/">Home</a>
-          <a className="hover:underline" href="/login">Login</a>
-          <a className="hover:underline" href="/nearby">Nearby</a>
-        </nav> */}
+        <ConditionalNavigation />
         {children}
       </body>
     </html>

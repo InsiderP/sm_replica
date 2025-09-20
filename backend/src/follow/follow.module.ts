@@ -4,13 +4,14 @@ import { Follow } from '../entities/follow.entity';
 import { Profile } from '../entities/profile.entity';
 import { FollowService } from './follow.service';
 import { FollowController } from './follow.controller';
-import { supabaseProvider } from 'src/common/providers/supabase.provider';
-import { AuthGuard } from 'src/auth/auth.guard';
+import { SupabaseProviderModule } from '../common/providers/supabase.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Follow, Profile])],
-  providers: [FollowService,supabaseProvider, AuthGuard],
+  imports: [
+    TypeOrmModule.forFeature([Follow, Profile]),
+    SupabaseProviderModule.forRootAsync()
+  ],
+  providers: [FollowService],
   controllers: [FollowController],
-
 })
 export class FollowModule {} 

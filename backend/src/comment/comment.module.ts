@@ -2,15 +2,17 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Comment } from '../entities/comment.entity';
 import { CommentLike } from '../entities/comment-like.entity';
-import { supabaseProvider } from '../common/providers/supabase.provider';
-import { AuthGuard } from '../auth/auth.guard';
+import { SupabaseProviderModule } from '../common/providers/supabase.module';
 import { CommentController } from './comment.controller';
 import { CommentService } from './comment.service';
 import { Post } from 'src/entities/post.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Comment, CommentLike,Post])],
+  imports: [
+    TypeOrmModule.forFeature([Comment, CommentLike, Post]),
+    SupabaseProviderModule.forRootAsync()
+  ],
   controllers: [CommentController],
-  providers: [CommentService, supabaseProvider, AuthGuard],
+  providers: [CommentService],
 })
 export class CommentModule {} 

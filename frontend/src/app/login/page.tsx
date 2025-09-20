@@ -18,7 +18,7 @@ export default function LoginPage() {
       const token = data?.data?.access_token || data?.access_token || data?.token;
       if (!token) throw new Error('No token in response');
       setAuthToken(token);
-      window.location.href = '/nearby';
+      window.location.href = '/dashboard';
     } catch (err: any) {
       setError(err?.response?.data?.message || err.message || 'Login failed');
     } finally {
@@ -27,7 +27,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-[calc(100vh-57px)] flex items-center justify-center bg-gradient-to-br from-[#0ea5e9]/10 via-transparent to-[#22d3ee]/10">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#0ea5e9]/10 via-transparent to-[#22d3ee]/10">
       <div className="w-full max-w-md mx-auto p-6 rounded-2xl border border-black/10 dark:border-white/10 bg-white/70 dark:bg-black/40 backdrop-blur shadow-lg">
         <h1 className="text-3xl font-extrabold mb-2 text-center">Welcome back</h1>
         <p className="text-center mb-6 opacity-80">Login to continue</p>

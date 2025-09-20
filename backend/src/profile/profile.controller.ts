@@ -107,17 +107,27 @@ export class ProfileController {
   @Get('nearby')
   @UseGuards(AuthGuard)
   @ApiOperation({ summary: 'Get nearby available public users within given radius (km)' })
+  @ApiQuery({ name: 'latitude', required: true, example: 28.6139, description: 'Current latitude' })
+  @ApiQuery({ name: 'longitude', required: true, example: 77.2090, description: 'Current longitude' })
   @ApiQuery({ name: 'radiusKm', required: false, example: 5, description: 'Search radius in kilometers' })
   async getNearby(
     @CurrentUser() user: any,
+    @Query('latitude') latitude?: string,
+    @Query('longitude') longitude?: string,
     @Query('radiusKm') radiusKm?: string,
   ) {
     const radius = Number(radiusKm ?? 5);
-    const me = await this.profileService.findById(user.id);
-    if (!me || me.latitude == null || me.longitude == null) {
-      return [];
+    const lat = Number(latitude);
+    const lon = Number(longitude);
+    if (!isFinite(lat) || !isFinite(lon)) {
+      // Fallback: use stored coords if query missing or invalid
+      const me = await this.profileService.findById(user.id);
+      if (!me || me.latitude == null || me.longitude == null) {
+        return [];
+      }
+      return this.profileService.findNearby(me.latitude, me.longitude, radius, user.id);
     }
-    return this.profileService.findNearby(me.latitude, me.longitude, radius, user.id);
+    return this.profileService.findNearby(lat, lon, radius, user.id);
   }
 
 } 
